@@ -1,72 +1,58 @@
 import os
 import csv
 
-#Path to collect Election Data
-csvpath='\\Users\\molly\\Desktop\\UCI\\Homework\\python-challenge\\PyPoll\\Resources\\election_data.csv'
+#define the path to the file 
+budget_csvpath = '\\Users\\molly\\Desktop\\UCI\\python-challenge\\PyBank\\Resources\\budget_data.csv'
 
-# set the total number of votes before the election begins equal to zero
-# set the vote counter and vote percentage for 4 candidates to zero
-total_votes = 0
-candidate_list = []
-candidate_name = []
-candidate_vote = [0, 0, 0, 0]
-candidate_vote_percent = [0, 0, 0, 0]
-candidate_winner = []
+#create trackers
+total_months = 0
+total_revenue = 0
+past_revenue = 0
+highest_inc_revenue = 0
+lowest_dec_revenue = 0
+revenue_change = []
 
-# define the path to the file that contains the results of the election
-with open(csvpath, 'r', newline='') as csvfile:
-    csv_reader = csv.reader(csvfile, delimiter=',')
-    csv_header = next(csv_reader, None)
-
-     # loop through entire file to count total votes, add names to the candidate_name list, and votes per candidate
-    for row in csv_reader:
-        total_votes += 1
-        candidate_list.append(str(row[2]))
+#read csv file
+with open(budget_csvpath, newline='') as csvfile:
+    budget_csvreader = csv.reader(csvfile, delimiter=',')
+    next(budget_csvreader, None)
+    
+    for row in budget_csvreader:
+        #count total months in csv file
+        total_months = total_months + 1
+        #count total revenue in csv file
+        total_revenue = total_revenue + (int(row[1]))
+        #create a variable that will count the revenue change
+        monthly_rev_change = int(row[1]) - past_revenue
+        past_revenue = int(row[1])
+        #add changes in new list
+        revenue_change.append(monthly_rev_change)
         
-    for row[2] in candidate_list:
-        if row[2] not in candidate_name:
-            candidate_name.append(row[2])
-        if row[2] == candidate_name[0]:
-            candidate_vote[0] += 1
-        elif row[2] == candidate_name[1]:
-            candidate_vote[1] += 1
-        elif row[2] == candidate_name[2]:
-            candidate_vote[2] += 1
-        elif row[2] == candidate_name[3]:
-            candidate_vote[3] += 1
+        #calculate the average change in revenue
+        avg_rev_change = round(sum(revenue_change)/len(revenue_change))
+        
+        #find the greatest increase in revenue
+        if (monthly_rev_change > highest_inc_revenue):
+            highest_inc_month = row[0]
+            highest_inc_revenue = monthly_rev_change 
+        #find the greatest decrease in revenue
+        if (monthly_rev_change < lowest_dec_revenue):
+            lowest_dec_month = row[0]
+            lowest_dec_revenue = monthly_rev_change
 
-    # Calculate the percentage of the total votes for each candidate
-    candidate_vote_percent[0] = round((candidate_vote[0] / total_votes) * 100, 2)
-    candidate_vote_percent[1] = round((candidate_vote[1] / total_votes) * 100, 2)
-    candidate_vote_percent[2] = round((candidate_vote[2] / total_votes) * 100, 2)
-    candidate_vote_percent[3] = round((candidate_vote[3] / total_votes) * 100, 2)
-
-    # Determine who the winner is
-    if candidate_vote[0] == max(candidate_vote[0], candidate_vote[1], candidate_vote[2], candidate_vote[3]):
-       candidate_winner = candidate_name[0]
-    elif candidate_vote[1] == max(candidate_vote[0], candidate_vote[1], candidate_vote[2], candidate_vote[3]):
-       candidate_winner = candidate_name[1]
-    elif candidate_vote[2] == max(candidate_vote[0], candidate_vote[1], candidate_vote[2], candidate_vote[3]):
-       candidate_winner = candidate_name[2]
-    elif candidate_vote[3] == max(candidate_vote[0], candidate_vote[1], candidate_vote[2], candidate_vote[3]):
-       candidate_winner = candidate_name[3]
-
-# print the report to the terminal screen
+#create varible to hold finanical analysis results and use f-strings for formatting
 results = (
-f"Election Results \n"
-f"----------------------------- \n"
-f"Total Votes: {total_votes} \n"
-f"----------------------------- \n"
-f"{candidate_name[0]}: {candidate_vote_percent[0]}% ({candidate_vote[0]}) \n"
-f"{candidate_name[1]}: {candidate_vote_percent[1]}% ({candidate_vote[1]}) \n"
-f"{candidate_name[2]}: {candidate_vote_percent[2]}% ({candidate_vote[2]}) \n"
-f"{candidate_name[3]}: {candidate_vote_percent[3]}% ({candidate_vote[3]}) \n"
-f"----------------------------- \n"
-f"Winner: {candidate_winner}")
+f"Financial Analysis \n"
+f"---------------------------- \n"
+f"Total Months: {total_months} \n"
+f"Total Revenue: ${total_revenue} \n"
+f"Average Revenue Change: ${avg_rev_change} \n"
+f"Greatest Increase in Revenue: {highest_inc_month} (${highest_inc_revenue}) \n"
+f"Greatest Decrease in Revenue: {lowest_dec_month} (${lowest_dec_revenue}) \n")
 print(results)
 
 #Write a text file to export results
-outputfile='\\Users\\molly\\Desktop\\UCI\\Homework\\python-challenge\\PyPoll\\Resources\\election_output.txt'
+outputfile='\\Users\\molly\\Desktop\\UCI\\python-challenge\\PyBank\\Resources\\budget_output.txt'
 
 with open(outputfile, 'w') as txtfile:
-    txtwrite = txtfile.write(results)
+    txtwriter = txtfile.write(results)
