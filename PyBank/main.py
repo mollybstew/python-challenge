@@ -7,10 +7,12 @@ budget_csvpath = '\\Users\\molly\\Desktop\\UCI\\python-challenge\\PyBank\\Resour
 #create trackers
 total_months = 0
 total_revenue = 0
-past_revenue = 0
+last_month_rev = 0
+this_month_rev = 0
 highest_inc_revenue = 0
 lowest_dec_revenue = 0
-revenue_change = []
+revenue_changes = []
+months = []
 
 #read csv file
 with open(budget_csvpath, newline='') as csvfile:
@@ -18,27 +20,27 @@ with open(budget_csvpath, newline='') as csvfile:
     next(budget_csvreader, None)
     
     for row in budget_csvreader:
-        #count total months in csv file
         total_months = total_months + 1
-        #count total revenue in csv file
-        total_revenue = total_revenue + (int(row[1]))
-        #create a variable that will count the revenue change
-        monthly_rev_change = int(row[1]) - past_revenue
-        past_revenue = int(row[1])
-        #add changes in new list
-        revenue_change.append(monthly_rev_change)
+        months.append(row[0])
+        this_month_rev = int(row[1])
+        total_revenue = total_revenue + this_month_rev
+        if total_months > 1:
+            rev_change = this_month_rev - last_month_rev
+            revenue_changes.append(rev_change)
+        last_month_rev = this_month_rev
         
-        #calculate the average change in revenue
-        avg_rev_change = round(sum(revenue_change)/len(revenue_change))
         
         #find the greatest increase in revenue
-        if (monthly_rev_change > highest_inc_revenue):
+        if (rev_change > highest_inc_revenue):
             highest_inc_month = row[0]
-            highest_inc_revenue = monthly_rev_change 
+            highest_inc_revenue = rev_change 
         #find the greatest decrease in revenue
-        if (monthly_rev_change < lowest_dec_revenue):
+        if (rev_change < lowest_dec_revenue):
             lowest_dec_month = row[0]
-            lowest_dec_revenue = monthly_rev_change
+            lowest_dec_revenue = rev_change
+            
+#calculate the average change in revenue
+avg_rev_change = round(sum(revenue_changes)/(total_months-1), 2)
 
 #create varible to hold finanical analysis results and use f-strings for formatting
 results = (
