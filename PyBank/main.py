@@ -7,6 +7,7 @@ budget_csvpath = '\\Users\\molly\\Desktop\\UCI\\python-challenge\\PyBank\\Resour
 #create trackers
 total_months = 0
 total_revenue = 0
+rev_change = 0
 last_month_rev = 0
 this_month_rev = 0
 highest_inc_revenue = 0
@@ -24,6 +25,7 @@ with open(budget_csvpath, newline='') as csvfile:
         months.append(row[0])
         this_month_rev = int(row[1])
         total_revenue = total_revenue + this_month_rev
+
         if total_months > 1:
             rev_change = this_month_rev - last_month_rev
             revenue_changes.append(rev_change)
