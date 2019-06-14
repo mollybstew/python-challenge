@@ -4,8 +4,7 @@ import csv
 #Path to collect Election Data
 csvpath='\\Users\\molly\\Desktop\\UCI\\python-challenge\\PyPoll\\Resources\\election_data.csv'
 
-# set the total number of votes before the election begins equal to zero
-# set the vote counter and vote percentage for 4 candidates to zero
+# Set the Varibales and define the lists
 total_votes = 0
 candidate_list = []
 candidate_name = []
